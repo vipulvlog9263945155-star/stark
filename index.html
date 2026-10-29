@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<title>VIPUL AI — Spider Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --spider-red:#ff2d55;
+  --spider-blue:#0066ff;
+  --spider-cyan:#00e5ff;
+  --gold:#fbbf24;
+  --win:#22c55e;
+  --dark:#08060e;
+  --muted:#8b8da8;
+  --txt:#f8f7ff;
+  --font-main:'Poppins',sans-serif;
+  --font-tech:'Orbitron',sans-serif;
+  --font-display:'Space Grotesk',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:var(--font-main);color:var(--txt);
+  background:var(--dark);
+  background-image:
+    radial-gradient(circle at 10% 12%, rgba(255,45,85,.24), transparent 42%),
+    radial-gradient(circle at 90% 20%, rgba(0,102,255,.28), transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(0,229,255,.14), transparent 50%);
+  position:relative;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:-1;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'><g stroke='%23ffffff' stroke-opacity='0.035' stroke-width='0.5' fill='none'><line x1='120' y1='0' x2='120' y2='240'/><line x1='0' y1='120' x2='240' y2='120'/><line x1='40' y1='40' x2='200' y2='200'/><line x1='200' y1='40' x2='40' y2='200'/><circle cx='120' cy='120' r='35'/><circle cx='120' cy='120' r='70'/><circle cx='120' cy='120' r='105'/></g></svg>");
+  background-repeat:repeat;pointer-events:none;
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.7),rgba(0,0,0,.1));
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.7),rgba(0,0,0,.1));
+}
+
+/* SPIDERMAN LOADER */
+#spiderLoader{
+  position:fixed;inset:0;z-index:99999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 30%, rgba(255,45,85,.22), transparent 60%),
+             radial-gradient(ellipse at 80% 80%, rgba(0,102,255,.22), transparent 60%),
+             #08060e;
+  transition:opacity .5s ease-out;
+}
+#spiderLoader::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><g stroke='%23ffffff' stroke-opacity='0.06' stroke-width='0.8' fill='none'><line x1='200' y1='0' x2='200' y2='400'/><line x1='0' y1='200' x2='400' y2='200'/><line x1='60' y1='60' x2='340' y2='340'/><line x1='340' y1='60' x2='60' y2='340'/><line x1='120' y1='0' x2='280' y2='400'/><line x1='280' y1='0' x2='120' y2='400'/><line x1='0' y1='120' x2='400' y2='280'/><line x1='0' y1='280' x2='400' y2='120'/><circle cx='200' cy='200' r='40'/><circle cx='200' cy='200' r='80'/><circle cx='200' cy='200' r='120'/><circle cx='200' cy='200' r='160'/></g></svg>");
+  background-position:center;background-repeat:no-repeat;
+  animation:webPulse 4s ease-in-out infinite;opacity:.5;
+}
+@keyframes webPulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.03);opacity:.6}}
+.spider-loader-box{position:relative;display:flex;flex-direction:column;align-items:center;padding:30px;z-index:1}
+.web-spinner{position:relative;width:130px;height:130px;margin-bottom:28px;display:grid;place-items:center}
+.web-ring{position:absolute;inset:0;border-radius:50%;border:2px solid transparent;filter:drop-shadow(0 0 10px currentColor)}
+.web-ring.r1{border-top-color:#ff2d55;border-right-color:#ff2d55;color:#ff2d55;animation:spin 1.3s linear infinite}
+.web-ring.r2{inset:12px;border-bottom-color:#0066ff;border-left-color:#0066ff;color:#0066ff;animation:spinRev 1.6s linear infinite}
+.web-ring.r3{inset:24px;border-top-color:#00e5ff;border-right-color:#00e5ff;color:#00e5ff;animation:spin 1.9s linear infinite}
+@keyframes spin{100%{transform:rotate(360deg)}}
+@keyframes spinRev{100%{transform:rotate(-360deg)}}
+.spider-icon{font-size:48px;z-index:2;animation:spiderBob 2s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(255,45,85,.9))}
+@keyframes spiderBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-8deg)}}
+.loader-title{
+  font-family:var(--font-tech);font-size:22px;font-weight:900;letter-spacing:4px;
+  background:linear-gradient(135deg,#ff2d55,#ffffff,#0066ff);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 16px rgba(255,45,85,.4));
+  margin-bottom:6px;text-align:center;
+}
+.loader-sub{font-size:10px;letter-spacing:3px;color:#a5a5c5;font-weight:800;margin-bottom:26px;text-align:center;animation:subPulse 1.5s ease-in-out infinite}
+@keyframes subPulse{0%,100%{opacity:.6}50%{opacity:1}}
+.loader-bar{width:240px;height:6px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden;position:relative;box-shadow:inset 0 0 8px rgba(0,0,0,.6)}
+.loader-fill{height:100%;width:0%;background:linear-gradient(90deg,#ff2d55,#a855f7,#0066ff,#00e5ff,#ff2d55);background-size:300% 100%;border-radius:10px;animation:gradientShift 2.5s linear infinite;box-shadow:0 0 12px rgba(255,45,85,.6),0 0 24px rgba(0,102,255,.4);transition:width .15s linear}
+@keyframes gradientShift{0%{background-position:0% 0}100%{background-position:300% 0}}
+.loader-percent{margin-top:12px;font-family:var(--font-tech);font-size:16px;font-weight:900;color:#ff2d55;letter-spacing:2px;text-shadow:0 0 12px rgba(255,45,85,.8);font-variant-numeric:tabular-nums}
+
+/* MAINTENANCE (NO OK BUTTON) */
+#maintenanceLock{position:fixed;inset:0;z-index:1000000;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(3,4,8,.98);backdrop-filter:blur(6px)}
+#maintenanceLock.show{display:flex}
+.lock-card{max-width:360px;width:100%;padding:32px 24px;text-align:center;border:1px solid rgba(255,211,106,.4);border-radius:20px;background:linear-gradient(150deg,#1b1017,#08090d);box-shadow:0 0 40px rgba(255,45,85,.2)}
+.lock-icon{font-size:56px;margin-bottom:14px;animation:spin 3s linear infinite;filter:drop-shadow(0 0 20px rgba(255,211,106,.6));display:inline-block}
+.lock-title{font-family:var(--font-tech);font-size:19px;font-weight:900;color:var(--gold);margin-bottom:12px;letter-spacing:2px}
+.lock-msg{font-size:13px;color:#ddd;line-height:1.7}
+
+/* WIN / SKIP OVERLAYS */
+#winOverlay{position:fixed;inset:0;background:rgba(5,5,15,.9);z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .3s;backdrop-filter:blur(10px)}
+#winOverlay.show{display:flex;opacity:1}
+.win-trophy{font-size:130px;animation:winPop .6s cubic-bezier(.175,.885,.32,1.275) forwards;filter:drop-shadow(0 0 40px rgba(0,229,255,.9))}
+.win-text{font-family:var(--font-display);font-size:48px;font-weight:700;letter-spacing:8px;margin-top:10px;background:linear-gradient(135deg,#00e5ff,#0066ff 50%,#ff2d55);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(0,102,255,.7));animation:slideUp .5s ease-out forwards}
+@keyframes winPop{0%{transform:scale(0) rotate(-45deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes slideUp{0%{transform:translateY(30px);opacity:0}100%{transform:translateY(0);opacity:1}}
+#skipOverlay{position:fixed;inset:0;background:rgba(5,5,15,.9);z-index:9998;display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .3s;backdrop-filter:blur(10px)}
+#skipOverlay.show{display:flex;opacity:1}
+.skip-icon-big{font-size:120px;color:#fbbf24;line-height:1;filter:drop-shadow(0 0 40px rgba(251,191,36,.9));animation:skipIconPop .7s cubic-bezier(.175,.885,.32,1.275) forwards}
+.skip-text-big{font-family:var(--font-display);font-size:52px;font-weight:700;letter-spacing:10px;color:#fbbf24;margin-top:12px;animation:skipTextPulse 1s ease-in-out infinite}
+.skip-sub{font-family:var(--font-tech);font-size:12px;color:#00e5ff;margin-top:14px;letter-spacing:4px;text-shadow:0 0 12px #00e5ff}
+@keyframes skipIconPop{0%{transform:scale(0) rotate(-90deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes skipTextPulse{0%,100%{text-shadow:0 0 20px #fbbf24,0 0 40px #fbbf24;transform:scale(1)}50%{text-shadow:0 0 30px #fbbf24,0 0 60px #fbbf24;transform:scale(1.05)}}
+
+/* MAIN APP 25/75 */
+#mainApp{width:100%;height:100vh;height:100dvh;display:flex;flex-direction:column;animation:fadeIn .55s ease-out}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+#topPanel{
+  flex:0 0 25%;height:25%;min-height:0;
+  padding:6px 8px;
+  display:flex;flex-direction:column;gap:5px;
+  background:linear-gradient(180deg,rgba(20,10,22,.9),rgba(8,6,14,.98));
+  border-bottom:1px solid rgba(255,45,85,.4);
+  overflow:hidden;
+}
+.top-header{
+  background:linear-gradient(135deg,rgba(255,45,85,.12),rgba(0,102,255,.12));
+  border:1px solid rgba(255,45,85,.28);
+  border-radius:10px;padding:5px 10px;flex-shrink:0;
+  display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 3px 10px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.brand-name{font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.5px;background:linear-gradient(135deg,#ff2d55 0%,#ffffff 50%,#0066ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 6px rgba(255,45,85,.4))}
+.mode-toggle{display:flex;gap:2px;background:rgba(0,0,0,.45);padding:2px;border-radius:6px;border:1px solid rgba(255,45,85,.22)}
+.mode-btn{padding:3px 7px;border-radius:5px;font-family:var(--font-tech);font-size:7.5px;font-weight:900;letter-spacing:.3px;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:all .2s}
+.mode-btn.active{color:#fff;background:linear-gradient(135deg,#ff2d55,#0066ff);box-shadow:0 0 8px rgba(255,45,85,.55)}
+
+.panel-content{flex:1;min-height:0;position:relative;display:flex;flex-direction:column}
+
+#uidBox{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px;text-align:center}
+.uid-logo{font-family:var(--font-tech);font-size:13px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#ff2d55,#ffffff,#0066ff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 8px rgba(255,45,85,.5))}
+.uid-sub{font-size:6.5px;letter-spacing:1.5px;color:#a5a5c5;font-weight:800}
+.uid-input-group{display:flex;gap:3px;width:100%;max-width:280px;margin-top:3px;background:rgba(5,6,10,.85);padding:3px;border-radius:7px;border:1px solid rgba(255,45,85,.35);box-shadow:inset 0 0 10px rgba(0,0,0,.7)}
+.uid-input-group:focus-within{border-color:#ff2d55;box-shadow:inset 0 0 10px rgba(0,0,0,.7),0 0 12px rgba(255,45,85,.3)}
+.uid-input{flex:1;padding:5px 6px;background:transparent;border:none;color:#ffd0d8;font-family:var(--font-tech);font-size:11px;font-weight:900;text-align:center;letter-spacing:2.5px;outline:none}
+.uid-input::placeholder{color:#666;letter-spacing:1px;font-family:var(--font-main);font-size:9px;font-weight:600}
+.uid-input.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-5px)}}
+.uid-btn{padding:0 10px;border-radius:5px;border:none;background:linear-gradient(135deg,#ff2d55,#0066ff);color:#fff;font-family:var(--font-tech);font-size:8px;font-weight:900;letter-spacing:.3px;cursor:pointer;box-shadow:0 0 8px rgba(255,45,85,.4);min-width:60px;position:relative;overflow:hidden}
+.uid-btn.loading{color:transparent;pointer-events:none}
+.uid-btn.loading::after{content:'';position:absolute;top:50%;left:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+.uid-msg{font-size:7.5px;font-weight:800;min-height:9px;letter-spacing:.5px;color:#ff2d55;text-align:center;line-height:1.2;padding:0 4px}
+
+#connectingState{position:absolute;inset:0;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(26,10,20,.98),rgba(8,6,14,.98));border-radius:10px}
+#connectingState.show{display:flex}
+.connect-spinner{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,45,85,.15);border-top-color:#ff2d55;border-right-color:#0066ff;animation:spin 1s linear infinite;margin-bottom:8px;filter:drop-shadow(0 0 8px rgba(255,45,85,.6))}
+.connect-check{font-size:26px;margin-bottom:4px;display:none;animation:popCheck .4s cubic-bezier(.175,.885,.32,1.275) forwards;filter:drop-shadow(0 0 12px rgba(34,197,94,.9))}
+@keyframes popCheck{0%{transform:scale(0)}100%{transform:scale(1)}}
+.connect-text{font-family:var(--font-tech);font-size:8.5px;font-weight:900;color:#ff2d55;letter-spacing:1.5px;text-shadow:0 0 8px rgba(255,45,85,.6);animation:subPulse 1s ease-in-out infinite}
+
+#verifiedContent{display:none;flex-direction:column;height:100%}
+#verifiedContent.show{display:flex}
+
+.prediction-panel{
+  flex:1;min-height:0;
+  background:linear-gradient(145deg,rgba(24,18,36,.92),rgba(8,6,14,.94));
+  border:1px solid rgba(255,45,85,.28);border-radius:12px;
+  padding:6px 10px;
+  display:flex;flex-direction:column;gap:3px;
+  box-shadow:0 6px 20px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);
+  overflow:hidden;
+}
+.top-info{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-shrink:0}
+#periodId{font-size:8px;color:var(--muted);font-family:var(--font-tech);font-weight:700;letter-spacing:.3px;opacity:.85;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.timer-ring{
+  --progress:0deg;position:relative;width:42px;height:42px;border-radius:50%;
+  display:grid;place-items:center;flex-shrink:0;
+  background:conic-gradient(from -90deg,#ff2d55 0deg,#ff2d55 calc(var(--progress) * .5),#a855f7 calc(var(--progress) * .75),#0066ff var(--progress),rgba(255,255,255,.06) var(--progress));
+  box-shadow:0 0 12px rgba(255,45,85,.4),0 0 20px rgba(0,102,255,.15),inset 0 0 12px rgba(0,0,0,.35);
+  transition:box-shadow .3s;animation:timerBreath 3s ease-in-out infinite;
+}
+@keyframes timerBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+.timer-ring::before{content:'';position:absolute;inset:3px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#1a0a20,#08060e 70%);box-shadow:inset 0 1px 4px rgba(0,0,0,.85)}
+.timer-ring span{position:relative;z-index:3;font-family:var(--font-tech);font-size:11px;font-weight:900;color:#fff;text-shadow:0 0 6px rgba(0,229,255,.9);letter-spacing:.2px}
+.timer-ring.urgent{animation:timerUrgent .85s ease-in-out infinite}
+.timer-ring.urgent span{color:#ff2d55;text-shadow:0 0 8px #ff2d55,0 0 16px rgba(255,45,85,.7)}
+@keyframes timerUrgent{0%,100%{box-shadow:0 0 14px rgba(255,45,85,.6),0 0 28px rgba(255,45,85,.28);transform:scale(1)}50%{box-shadow:0 0 22px rgba(255,45,85,1),0 0 44px rgba(255,45,85,.5);transform:scale(1.06)}}
+
+.pred-label{font-size:8px;letter-spacing:2.5px;font-weight:800;text-align:center;font-family:var(--font-display);text-transform:uppercase;background:linear-gradient(135deg,#ff2d55,#ffffff,#0066ff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 5px rgba(255,45,85,.3));flex-shrink:0}
+.pred-value{font-family:var(--font-display);font-size:32px;font-weight:700;text-align:center;line-height:1;letter-spacing:1px;flex-shrink:0;margin:-1px 0}
+.pred-value.B{background:linear-gradient(135deg,#00e5ff 0%,#0066ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 14px rgba(0,102,255,.7));animation:neonFloat 3s ease-in-out infinite}
+.pred-value.S{background:linear-gradient(135deg,#ff6b8a 0%,#ff2d55 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 14px rgba(255,45,85,.7));animation:neonFloat 3s ease-in-out infinite}
+.pred-value.WAIT{color:#4b4b63;font-size:20px}
+.pred-value.SKIP{background:linear-gradient(135deg,#fbbf24,#fb923c);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:20px;filter:drop-shadow(0 0 10px rgba(251,191,36,.6))}
+@keyframes neonFloat{0%,100%{transform:translateY(0);filter:brightness(1)}50%{transform:translateY(-1px);filter:brightness(1.12)}}
+
+.level-row{display:flex;justify-content:space-between;gap:6px;flex-shrink:0;margin-top:1px}
+.l-box{flex:1;background:linear-gradient(135deg,rgba(255,45,85,.10),rgba(0,102,255,.10));border:1px solid rgba(255,45,85,.24);border-radius:7px;padding:3px 8px;display:flex;justify-content:space-between;align-items:center;min-width:0}
+.l-title{font-size:7px;color:var(--muted);font-weight:800;letter-spacing:.4px;font-family:var(--font-display);white-space:nowrap}
+.l-val{font-family:var(--font-tech);font-size:11.5px;font-weight:900;background:linear-gradient(135deg,#ff2d55,#0066ff);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-flex;align-items:baseline;gap:2px}
+.l-count{font-family:var(--font-tech);font-size:9px;font-weight:900;color:#6a6a7d;-webkit-text-fill-color:#6a6a7d;letter-spacing:0}
+
+.boxes{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;flex-shrink:0;margin-top:2px}
+.box{height:16px;border-radius:3px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#4b4b63;transition:all .3s;font-family:var(--font-tech)}
+.box.B{background:linear-gradient(135deg,rgba(0,229,255,.28),rgba(0,102,255,.28));color:#b8ecff;border-color:rgba(0,229,255,.7);box-shadow:0 0 6px rgba(0,102,255,.35)}
+.box.S{background:linear-gradient(135deg,rgba(255,107,138,.28),rgba(255,45,85,.28));color:#ffd0d8;border-color:rgba(255,45,85,.7);box-shadow:0 0 6px rgba(255,45,85,.35)}
+
+#bottomPanel{flex:1;min-height:0;background:#000;position:relative;border-top:1px solid rgba(255,45,85,.4);box-shadow:0 -6px 24px rgba(255,45,85,.12);display:flex;flex-direction:column}
+#gameIframe{flex:1;width:100%;min-height:0;border:none;background:#111;display:block;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<div id="maintenanceLock">
+  <div class="lock-card">
+    <div class="lock-icon">⚙️</div>
+    <div class="lock-title">SYSTEM UPDATING</div>
+    <div class="lock-msg">Please try again later.</div>
+  </div>
+</div>
+
+<div id="spiderLoader">
+  <div class="spider-loader-box">
+    <div class="web-spinner">
+      <div class="web-ring r1"></div>
+      <div class="web-ring r2"></div>
+      <div class="web-ring r3"></div>
+      <div class="spider-icon">🕷️</div>
+    </div>
+    <div class="loader-title">VIPUL AI</div>
+    <div class="loader-sub" id="loaderSub">SPIDER ENGINE INITIALIZING...</div>
+    <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
+    <div class="loader-percent" id="loaderPercent">0%</div>
+  </div>
+</div>
+
+<div id="winOverlay"><div class="win-trophy">🏆</div><div class="win-text">WIN !</div></div>
+<div id="skipOverlay">
+  <div class="skip-icon-big">⊘</div>
+  <div class="skip-text-big">SKIP</div>
+  <div class="skip-sub">NEXT 2 PERIODS</div>
+</div>
+
+<div id="mainApp">
+  <div id="topPanel">
+    <div class="top-header">
+      <div class="brand-name">VIPUL BHAI</div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="oneMinBtn" onclick="switchMode('1min')">1 MIN</button>
+        <button class="mode-btn" id="thirtySecBtn" onclick="switchMode('30sec')">30 SEC</button>
+      </div>
+    </div>
+
+    <div class="panel-content">
+      <div id="uidBox">
+        <div class="uid-logo">VIPUL AI</div>
+        <div class="uid-sub">SPIDER ACCESS • SECURE UID</div>
+        <div class="uid-input-group">
+          <input type="text" id="uidInput" class="uid-input" placeholder="ENTER UID" inputmode="numeric" maxlength="10" autocomplete="off">
+          <button id="connectBtn" class="uid-btn">CONNECT</button>
+        </div>
+        <div id="uidMsg" class="uid-msg"></div>
+      </div>
+
+      <div id="connectingState">
+        <div class="connect-spinner" id="connSpinner"></div>
+        <div class="connect-check" id="connCheck">✅</div>
+        <div class="connect-text" id="connectText">VERIFYING UID...</div>
+      </div>
+
+      <div id="verifiedContent">
+        <div class="prediction-panel">
+          <div class="top-info">
+            <span id="periodId">...</span>
+            <div class="timer-ring" id="timerRing"><span id="timer">--</span></div>
+          </div>
+          <div class="pred-label" id="predLabel">AI PREDICTION</div>
+          <div class="pred-value WAIT" id="predValue">WAIT</div>
+
+          <div class="level-row">
+            <div class="l-box">
+              <span class="l-title">HIGHEST</span>
+              <span class="l-val"><span id="highestLevelDisplay">L1</span><span class="l-count" id="highestCount"></span></span>
+            </div>
+            <div class="l-box">
+              <span class="l-title">CURRENT</span>
+              <span class="l-val" id="currentLevelDisplay">L1</span>
+            </div>
+          </div>
+
+          <div class="boxes" id="boxes"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="bottomPanel">
+    <iframe id="gameIframe" title="BDG Win game"
+      src="https://bdgwin37.com/#/register?invitationCode=8674616623662"
+      allow="fullscreen; clipboard-read; clipboard-write; payment"
+      referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getDatabase, ref, onValue, set, remove, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyBFdvXN8SAy77EDQp5HNykO5z2Wa0W8sb0',
+  authDomain: 'bdgrocky.firebaseapp.com',
+  databaseURL: 'https://bdgrocky-default-rtdb.asia-southeast1.firebasedatabase.app',
+  projectId: 'bdgrocky'
+};
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const settingsRef = ref(db, 'settings');
+const approvedRef = ref(db, 'approved_uids');
+let settingsCache = null;
+let approvedCache = null;
+let settingsReadyResolve, approvedReadyResolve;
+const settingsReady = new Promise(r => settingsReadyResolve = r);
+const approvedReady = new Promise(r => approvedReadyResolve = r);
+window.accessControlReady = Promise.all([settingsReady, approvedReady]);
+let previousAuthVersion;
+let loggedInUid = '';
+let sessionKey = 'sess_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+let sessionRegistered = false;
+
+function uidKey(uid){ return String(uid||'').trim().replace(/[.#$\/\[\]]/g,'_'); }
+function isApproved(uid){
+  if(!approvedCache) return false;
+  const item = approvedCache[uidKey(uid)];
+  return !!(item && item.approved === true && String(item.uid||'').trim() === String(uid).trim());
+}
+function showMaintenance(){ document.getElementById('maintenanceLock').classList.add('show'); }
+function hideMaintenance(){ document.getElementById('maintenanceLock').classList.remove('show'); }
+async function endSession(title, message){
+  loggedInUid = '';
+  window.isVerified = false;
+  document.getElementById('verifiedContent').classList.remove('show');
+  document.getElementById('connectingState').classList.remove('show');
+  document.getElementById('uidBox').style.display = 'flex';
+  const btn = document.getElementById('connectBtn');
+  if(btn){ btn.disabled = false; btn.classList.remove('loading'); }
+  const input = document.getElementById('uidInput');
+  if(input) input.value = '';
+  if(sessionRegistered){
+    try { await remove(ref(db, 'active_users/' + sessionKey)); } catch(_){}
+    sessionRegistered = false;
+  }
+  const m = document.getElementById('uidMsg');
+  if(m){ m.textContent = message || ''; m.style.color = 'var(--spider-red)'; }
+}
+window.verifyAdminAccess = async function(uid){
+  await window.accessControlReady;
+  if(settingsCache && settingsCache.maintenance === true)
+    return {ok:false, reason:'SYSTEM UPDATING — PLEASE TRY AGAIN LATER', maintenance:true};
+  if(!isApproved(uid))
+    return {ok:false, reason:'❌ UID NOT APPROVED — DEPOSIT 300 AMOUNT FOR UID VERIFICATION'};
+  loggedInUid = String(uid).trim();
+  window.isVerified = true;
+  return {ok:true};
+};
+
+onValue(settingsRef, snapshot => {
+  settingsCache = snapshot.exists() ? snapshot.val() : {};
+  settingsReadyResolve();
+  const version = settingsCache.authVersion ?? null;
+  if(previousAuthVersion !== undefined && version !== previousAuthVersion && loggedInUid){
+    endSession('SECURITY UPDATED', 'Admin changed security settings. Please verify your UID again.');
+  }
+  previousAuthVersion = version;
+  if(settingsCache.maintenance === true){
+    showMaintenance();
+    if(loggedInUid || window.isVerified){
+      endSession('MAINTENANCE MODE', 'The administrator enabled maintenance. All sessions have been logged out.');
+    }
+  } else {
+    hideMaintenance();
+  }
+}, error => { console.error('Settings listener failed', error); settingsReadyResolve(); });
+
+onValue(approvedRef, snapshot => {
+  approvedCache = snapshot.exists() ? snapshot.val() : {};
+  approvedReadyResolve();
+  if(loggedInUid && !isApproved(loggedInUid)){
+    endSession('UID ACCESS REVOKED', 'Your UID is no longer approved by the administrator.');
+  }
+}, error => { console.error('Approved listener failed', error); approvedReadyResolve(); });
+
+const originalVerify = window.verifyAdminAccess;
+window.verifyAdminAccess = async function(uid){
+  const result = await originalVerify(uid);
+  if(!result.ok) return result;
+  try {
+    const userRef = ref(db, 'active_users/' + sessionKey);
+    await set(userRef, { uid: String(uid).trim(), startedAt: Date.now(), page: 'Spider.html' });
+    sessionRegistered = true;
+    onDisconnect(userRef).remove().catch(() => {});
+  } catch(err){ console.warn('Session register failed', err); }
+  return result;
+};
+</script>
+
+<script>
+/* WIN SOUND */
+let audioCtx = null;
+function initAudio(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+function playWinSound(){
+    if(!audioCtx) return;
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    const duration = 0.12;
+    notes.forEach((freq, index) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        const startTime = audioCtx.currentTime + (index * duration);
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(0.6, startTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.01, startTime + duration + 0.2);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(startTime); osc.stop(startTime + duration + 0.2);
+    });
+}
+document.body.addEventListener('touchstart', initAudio, {once: true});
+document.body.addEventListener('click', initAudio, {once: true});
+
+/* CORE LOGIC */
+const KEY_MAP={'0000':'B','0101':'S','0202':'S','0303':'B','0404':'S','0505':'S','0606':'B','0707':'B','0808':'S','0909':'S','1010':'S','1111':'S','1212':'B','1313':'S','1414':'B','1515':'S','1616':'B','1717':'S','1818':'S','1919':'S','2020':'B','2121':'S','2222':'S','2323':'S','2424':'B','2525':'S','2626':'S','2727':'S','2828':'S','2929':'S','3030':'S','3131':'S','3232':'S','3333':'S','3434':'S','3535':'B','3636':'B','3737':'B','3838':'S','3939':'S','4040':'S','4141':'S','4242':'B','4343':'B','4444':'S','4545':'B','4646':'S','4747':'S','4848':'S','4949':'B','5050':'S','5151':'S','5252':'S','5353':'S','5454':'B','5555':'S','5656':'S','5757':'S','5858':'S','5959':'B','6060':'S','6161':'S','6262':'S','6363':'S','6464':'S','6565':'B','6666':'S','6767':'S','6868':'B','6969':'S','7070':'B','7171':'S','7272':'S','7373':'B','7474':'S','7575':'B','7676':'S','7777':'S','7878':'S','7979':'S','8080':'B','8181':'B','8282':'S','8383':'S','8484':'B','8585':'S','8686':'B','8787':'B','8888':'S','8989':'B','9090':'S','9191':'S','9292':'S','9393':'B','9494':'S','9595':'S','9696':'B','9797':'B','9898':'B','9999':'S'};
+const NUMBER_CHART=['B','B','S','S','B','B','S','S','B','B','S','B','S','B','S','S','S','B','S','B','S','S','S','B','B','B','S','S','S','B','S','S','B','S','B','S','B','S','B','S','S','S','S','B','B','S','S','S','B','B','S','S','S','S','S','S','S','S','B','B','S','B','B','B','S','B','B','B','B','B','S','B','S','B','B','B','B','S','B','S','S','B','B','S','S','S','B','S','S','B','B','B','S','B','S','B','B','S','S','B'];
+
+function getVipCoreVote(seqChrono){
+  if(!Array.isArray(seqChrono)||seqChrono.length<5)return null;
+  const bits=seqChrono.map(x=>x==='B'?1:0);const n=bits.length;
+  const vWin=bits.slice(-Math.min(5,n));const vSum=vWin.reduce((a,b)=>a+b,0);
+  const vVote=vSum%2===0?'B':'S';
+  const last2=bits.slice(-2);const iVal=last2[0]*2+last2[1];const iVote=iVal>=2?'B':'S';
+  const last3=bits.slice(-3).join('');
+  const colorMap={'000':'S','001':'S','010':'B','011':'B','100':'B','101':'S','110':'B','111':'S'};
+  const pVote=colorMap[last3]||'S';
+  let bV=0,sV=0;
+  if(vVote==='B')bV++;else sV++;if(iVote==='B')bV++;else sV++;if(pVote==='B')bV++;else sV++;
+  let aiVal; if(bV>sV)aiVal='B'; else if(sV>bV)aiVal='S'; else {const avg=bits.reduce((a,b)=>a+b,0)/n;aiVal=avg>=0.5?'S':'B';}
+  return{value:aiVal,weight:3.2};
+}
+function getComebackVote(seqChrono,periodId){
+  const last2=periodId.slice(-2),key=last2+last2;
+  const keyMapVote=KEY_MAP[key];
+  const numVote=chartNum1!==null?NUMBER_CHART[chartNum1]:null;
+  const votes=[];
+  if(keyMapVote) votes.push({value:keyMapVote, weight:1});
+  if(numVote) votes.push({value:numVote, weight:1});
+  if(votes.length===0) return null;
+  const bW=votes.filter(v=>v.value==='B').reduce((s,v)=>s+v.weight,0);
+  const sW=votes.filter(v=>v.value==='S').reduce((s,v)=>s+v.weight,0);
+  if(bW===sW) return null;
+  return {value: bW>sW?'B':'S', weight:3.5};
+}
+function akatsukiComputeBSWeights(bs){
+  if(!bs.length||bs.length<3){const r=Math.random();return {B:r,S:1-r}}
+  let streak=1;for(let i=1;i<Math.min(bs.length,8);i++){if(bs[i]===bs[0])streak++;else break}
+  let wB=0.5,wS=0.5;
+  if(streak>=4){if(bs[0]==='B'){wB+=0.32;wS-=0.32}else{wS+=0.32;wB-=0.32}}
+  else if(streak>=3){if(bs[0]==='B'){wB+=0.22;wS-=0.22}else{wS+=0.22;wB-=0.22}}
+  else if(streak>=2){if(bs[0]==='B'){wB+=0.10;wS-=0.10}else{wS+=0.10;wB-=0.10}}
+  const last10=bs.slice(0,10);const bCnt=last10.filter(x=>x==='B').length;const sCnt=last10.length-bCnt;
+  if(bCnt>=8){wB+=0.26;wS-=0.26}else if(bCnt>=7){wB+=0.18;wS-=0.18}else if(bCnt>=6){wB+=0.08;wS-=0.08}
+  if(sCnt>=8){wS+=0.26;wB-=0.26}else if(sCnt>=7){wS+=0.18;wB-=0.18}else if(sCnt>=6){wS+=0.08;wB-=0.08}
+  return {B: Math.max(0.05,Math.min(0.95,wB)), S: Math.max(0.05,Math.min(0.95,wS))};
+}
+function getAkatsukiVote(seqChrono){
+  if(seqChrono.length<3)return null;
+  const bs=seqChrono.slice().reverse();const ws=akatsukiComputeBSWeights(bs);
+  return {value: ws.B>=ws.S?'B':'S', weight:3.0};
+}
+function getCOMBO_Card_Vote(seq,periodId){
+  const v1=getVipCoreVote(seq);const v2=getComebackVote(seq,periodId);const v3=getAkatsukiVote(seq);
+  const votes=[v1,v2,v3].filter(v=>v!==null);
+  if(votes.length===0)return null;
+  const bW=votes.filter(v=>v.value==='B').reduce((s,v)=>s+v.weight,0);
+  const sW=votes.filter(v=>v.value==='S').reduce((s,v)=>s+v.weight,0);
+  return bW>=sW?'B':'S';
+}
+function getNexaCoreVote(seqChrono){
+  if(seqChrono.length<5)return null;
+  const bits=seqChrono.map(x=>x==='B'?1:0);
+  const last4=bits.slice(-4).join('');
+  let matchB=0,matchS=0;
+  for(let i=0;i<bits.length-4;i++){if(bits.slice(i,i+4).join('')===last4){if(bits[i+4]===1)matchB++;else matchS++;}}
+  let big=0,small=0;
+  if(matchB!==matchS){if(matchB>matchS)big+=35;else small+=35;}
+  const shortMA=bits.slice(-5).reduce((a,b)=>a+b,0)/5;
+  const longMA=bits.slice(-20).reduce((a,b)=>a+b,0)/bits.slice(-20).length;
+  if(shortMA>longMA&&shortMA>0.5)big+=20; else if(shortMA<longMA&&shortMA<0.5)small+=20;
+  const ratio=bits.slice(-15).reduce((a,b)=>a+b,0)/15;
+  if(ratio>=0.8)big+=55; else if(ratio<=0.2)small+=55;
+  let val; if(big>small)val='B'; else if(small>big)val='S'; else val=shortMA>longMA?'B':'S';
+  return {value:val, weight:4};
+}
+function getOmniEnsembleVote(seqChrono, allHistory){
+  const allResults=[];
+  if(Array.isArray(allHistory)){for(const h of allHistory){if(h&&(h.actual==='B'||h.actual==='S'))allResults.push(h.actual)}}
+  if(Array.isArray(seqChrono)){for(const x of seqChrono){if(x==='B'||x==='S')allResults.push(x)}}
+  const recent=allResults.slice(-20).reverse();
+  if(recent.length<3)return null;
+  const nums=recent.map(v=>v==='B'?7:2);let big=0,small=0;
+  const avg=nums.reduce((a,b)=>a+b,0)/nums.length;
+  const variance=nums.reduce((a,b)=>a+Math.pow(b-avg,2),0)/nums.length;
+  const stdDev=Math.sqrt(variance);
+  if(avg>4.5+(stdDev*0.15))big+=35000000;else if(avg<4.5-(stdDev*0.15))small+=35000000;
+  else{small+=17500000;big+=17500000}
+  let cons=1;for(let i=0;i<recent.length-1;i++){if(recent[i]===recent[i+1])cons++;else break;}
+  if(cons>=4){recent[0]==='B'?big+=cons*15000000:small+=cons*15000000}
+  else if(cons===1){recent[0]==='B'?big+=28000000:small+=28000000}
+  else{recent[0]==='B'?big+=25000000:small+=25000000}
+  return {value: big>small?'B':'S', weight:2};
+}
+function getPERSONAL_Card_Vote(seq, history){
+  const v1=getNexaCoreVote(seq);const v2=getOmniEnsembleVote(seq, history);
+  const votes=[v1,v2].filter(v=>v!==null);
+  if(votes.length===0)return null;
+  const bW=votes.filter(v=>v.value==='B').reduce((s,v)=>s+v.weight,0);
+  const sW=votes.filter(v=>v.value==='S').reduce((s,v)=>s+v.weight,0);
+  return bW>=sW?'B':'S';
+}
+
+/* TRICK LOGIC */
+function lg_getSize(n){ return n >= 5 ? 'BIG' : 'SMALL'; }
+function lg_pickNumberFor(nums, size){
+  if(!nums.length) return null;
+  const pool = size === 'BIG' ? [5,6,7,8,9] : [0,1,2,3,4];
+  const freq = {};nums.forEach(n => freq[n] = (freq[n]||0) + 1);
+  const gap = {};pool.forEach(d => { const idx = nums.indexOf(d); gap[d] = idx === -1 ? nums.length : idx; });
+  const scored = pool.map(n => ({ n, score:(freq[n]||0)*2 + (gap[n]||0)*1.5 }));
+  scored.sort((a,b)=> b.score - a.score);
+  return scored[0]?.n ?? pool[0];
+}
+function lg_computeBSWeights(nums){
+  if(nums.length < 3) return { BIG:0.5, SMALL:0.5 };
+  const bsh = nums.map(lg_getSize);let streak = 1;
+  for(let i=1;i<Math.min(bsh.length,8);i++){ if(bsh[i]===bsh[0]) streak++; else break; }
+  let wB = 0.5, wS = 0.5;
+  if(streak >= 4){ if(bsh[0]==='BIG'){ wS+=0.32; wB-=0.32; } else { wB+=0.32; wS-=0.32; } }
+  else if(streak >= 3){ if(bsh[0]==='BIG'){ wS+=0.22; wB-=0.22; } else { wB+=0.22; wS-=0.22; } }
+  else if(streak >= 2){ if(bsh[0]==='BIG'){ wS+=0.10; wB-=0.10; } else { wB+=0.10; wS-=0.10; } }
+  const last10 = bsh.slice(0,10);const bCnt = last10.filter(x=>x==='BIG').length;const sCnt = 10 - bCnt;
+  if(bCnt >= 8){ wS+=0.26; wB-=0.26; }else if(bCnt >= 7){ wS+=0.18; wB-=0.18; }else if(bCnt >= 6){ wS+=0.08; wB-=0.08; }
+  if(sCnt >= 8){ wB+=0.26; wS-=0.26; }else if(sCnt >= 7){ wB+=0.18; wS-=0.18; }else if(sCnt >= 6){ wB+=0.08; wS-=0.08; }
+  let alt = 0;const L = Math.min(bsh.length-1, 12);
+  for(let i=0;i<L;i++) if(bsh[i]!==bsh[i+1]) alt++;
+  const altRate = alt / Math.max(1, L);
+  if(altRate > 0.72){ if(bsh[0]==='BIG'){ wS+=0.20; wB-=0.20; } else { wB+=0.20; wS-=0.20; } }
+  else if(altRate < 0.28){ if(bsh[0]==='BIG'){ wB+=0.12; wS-=0.12; } else { wS+=0.12; wB-=0.12; } }
+  const trans = Array(10).fill(null).map(()=>Array(10).fill(0));
+  for(let i=1;i<nums.length;i++) trans[nums[i-1]][nums[i]]++;
+  const tr = trans[nums[0]];const tot = tr.reduce((a,b)=>a+b,0);
+  if(tot > 2){ let tB = 0, tS = 0;for(let i=0;i<10;i++){ if(i>=5) tB+=tr[i]; else tS+=tr[i]; }const frac = tB / tot;wB += (frac - 0.5) * 0.30;wS -= (frac - 0.5) * 0.30; }
+  wB = Math.max(0.05, Math.min(0.95, wB));wS = Math.max(0.05, Math.min(0.95, wS));
+  const tot2 = wB + wS;return { BIG: wB/tot2, SMALL: wS/tot2 };
+}
+function lg_nextIssueId(issue){
+  const value = String(issue ?? '');const match = value.match(/^(.*?)(\d+)$/);if(!match) return null;
+  try { const next = (BigInt(match[2]) + 1n).toString().padStart(match[2].length, '0'); return match[1] + next; } catch(e) { return null; }
+}
+function lg_logic_drago_noname(ctx){const {nums}=ctx;if(nums.length<3)return null;const ws=lg_computeBSWeights(nums);const size=ws.BIG>=ws.SMALL?'BIG':'SMALL';return{prediction:size,number:lg_pickNumberFor(nums,size)};}
+function lg_logic_kingvip(ctx){const {period}=ctx;if(!period)return null;const last1=parseInt(period.slice(-1),10);const last3=parseInt(period.slice(-3),10);if(isNaN(last1)||isNaN(last3))return null;const val=(last1*7+last3)%10;return{prediction:val>=5?'BIG':'SMALL',number:val};}
+function lg_logic_wolfcore(ctx){
+  const {nums}=ctx;if(nums.length<8)return null;
+  const last20=nums.slice(0,Math.min(20,nums.length));const last10Sizes=last20.slice(0,Math.min(10,last20.length)).map(lg_getSize);
+  let bigW=0,smallW=0;
+  const markovMatrix=last20.reduce((acc,val,idx)=>{if(idx<last20.length-1)acc+=Math.abs(val-last20[idx+1]);return acc;},0);
+  const vol=markovMatrix/(last20.length-1);const avg=last20.reduce((a,b)=>a+b,0)/last20.length;
+  const variance=last20.reduce((a,b)=>a+Math.pow(b-avg,2),0)/last20.length;const stdDev=Math.sqrt(variance);
+  if(avg>4.5+stdDev*0.15)bigW+=35;else if(avg<4.5-stdDev*0.15)smallW+=35;else{smallW+=17.5;bigW+=17.5;}
+  let cons=1;for(let i=0;i<Math.min(9,last10Sizes.length-1);i++){if(last10Sizes[i]===last10Sizes[i+1])cons++;else break;}
+  if(cons>=4){if(last10Sizes[0]==='BIG')bigW+=cons*15;else smallW+=cons*15;}
+  else if(cons===1){if(last10Sizes[0]==='BIG')bigW+=28;else smallW+=28;}
+  else{if(last10Sizes[0]==='BIG')bigW+=25;else smallW+=25;}
+  const gap=Math.abs(last20[0]-last20[1]);const harm=Math.sin(gap)+Math.cos(vol);
+  if(harm>0.5){if(last20[0]>=5)bigW+=22;else smallW+=22;}else{if(last20[0]>=5)smallW+=22;else bigW+=22;}
+  return {prediction:bigW>smallW?'BIG':'SMALL',number:lg_pickNumberFor(nums,bigW>smallW?'BIG':'SMALL')};
+}
+function lg_logic_pattern3(ctx){
+  const {sizes,nums}=ctx;if(sizes.length<6)return null;
+  const currentPat=sizes.slice(0,3).reverse().join('-');
+  let bCnt=0,sCnt=0,matches=0;
+  for(let i=1;i<sizes.length-4;i++){const pat=sizes.slice(i,i+3).reverse().join('-');if(pat===currentPat){matches++;const next=sizes[i-1];if(next==='BIG')bCnt++;else sCnt++;}}
+  let pred;if(matches===0)pred=sizes[0];else pred=bCnt>=sCnt?'BIG':'SMALL';
+  return {prediction:pred,number:lg_pickNumberFor(nums,pred)};
+}
+function lg_logic_mayank(ctx){const {sizes,nums}=ctx;if(sizes.length<3)return null;let cons=1;for(let i=1;i<sizes.length;i++){if(sizes[i]===sizes[0])cons++;else break;}if(cons>=5){return{prediction:sizes[0],number:lg_pickNumberFor(nums,sizes[0])};}return{prediction:'BIG',number:5};}
+function lg_logic_twolevel(ctx){
+  const {nums,sizes}=ctx;if(sizes.length<5)return null;
+  const big6=sizes.slice(0,6).filter(s=>s==='BIG').length;const ratio=big6/Math.min(6,sizes.length);
+  let alt=0;const L=Math.min(5,sizes.length-1);for(let i=0;i<L;i++)if(sizes[i]!==sizes[i+1])alt++;
+  const altRate=alt/Math.max(1,L);let streak=1;for(let i=1;i<sizes.length;i++){if(sizes[i]===sizes[0])streak++;else break;}
+  let l1Trend;
+  if(streak>=3)l1Trend=sizes[0];else if(altRate>0.7)l1Trend=ratio>=0.5?'BIG':'SMALL';
+  else if(ratio>0.65)l1Trend='BIG';else if(ratio<0.35)l1Trend='SMALL';
+  else{const avg5=nums.slice(0,5).reduce((a,b)=>a+b,0)/Math.min(5,nums.length);l1Trend=avg5>=4.5?'BIG':'SMALL';}
+  let l2Trend='BIG',l2CycleMatch=false;
+  if(sizes.length>=8){const big15=sizes.slice(0,Math.min(15,sizes.length)).filter(s=>s==='BIG').length;const bigRatio=big15/Math.min(15,sizes.length);
+    if(bigRatio>0.55)l2Trend='BIG';else if(bigRatio<0.45)l2Trend='SMALL';else l2Trend=l1Trend;
+    const blocks={};for(let i=0;i<Math.min(16,sizes.length);i+=2){const b=sizes.slice(i,i+2).join('');blocks[b]=(blocks[b]||0)+1;}
+    const top=Object.entries(blocks).sort((a,b)=>b[1]-a[1])[0];if(top&&top[1]/Math.max(1,Math.ceil(Math.min(16,sizes.length)/2))>0.55)l2CycleMatch=true;
+  }
+  const agree=l1Trend===l2Trend;const pred=agree?l1Trend:(l2CycleMatch?l2Trend:l1Trend);
+  return {prediction:pred,number:lg_pickNumberFor(nums,pred)};
+}
+function lg_logic_dragon_empire(ctx){const {sizes,nums}=ctx;if(sizes.length<3)return null;const trend=sizes.slice(0,3);const pred=trend.filter(x=>x==='BIG').length>=2?'BIG':'SMALL';return{prediction:pred,number:lg_pickNumberFor(nums,pred)};}
+function lg_logic_elitev3(ctx){
+  const {nums,sizes,period}=ctx;if(nums.length<3)return null;
+  let streak=1;for(let i=0;i<sizes.length-1&&sizes[i]===sizes[i+1];i++)streak++;
+  let pred;if(streak>=2)pred=sizes[0];else{const bigs=sizes.slice(0,8).filter(x=>x==='BIG').length;pred=bigs>=4?'BIG':'SMALL';}
+  const range=pred==='SMALL'?[0,1,2,3,4]:[5,6,7,8,9];
+  const freq=Object.fromEntries(range.map(n=>[n,0]));nums.slice(0,Math.min(16,nums.length)).forEach(n=>{if(freq[n]!==undefined)freq[n]++;});
+  const hash=Number(String(period||'').slice(-4))||0;range.sort((a,b)=>(freq[a]-freq[b])||(a-b));
+  const num=(hash%3===0)?range[0]:range[hash%range.length];
+  return {prediction:pred,number:num};
+}
+function lg_logic_akatsuki(ctx){const {nums}=ctx;if(nums.length<3)return null;const ws=lg_computeBSWeights(nums);const size=ws.BIG>=ws.SMALL?'BIG':'SMALL';return{prediction:size,number:lg_pickNumberFor(nums,size)};}
+function lg_logic_blackgoku(ctx){
+  const {nums,sizes}=ctx;if(nums.length<4)return null;
+  let mk=null;const tr={};for(let i=0;i<sizes.length-1;i++){if(!tr[sizes[i]])tr[sizes[i]]={};tr[sizes[i]][sizes[i+1]]=(tr[sizes[i]][sizes[i+1]]||0)+1;}
+  if(tr[sizes[0]]){const nexts=Object.entries(tr[sizes[0]]).sort((a,b)=>b[1]-a[1]);if(nexts.length)mk=nexts[0][0];}
+  let streak=1;for(let i=1;i<sizes.length;i++){if(sizes[i]===sizes[0])streak++;else break;}
+  let mom=null;if(streak>=3)mom=sizes[0];
+  let reg=null;
+  if(nums.length>=5){const n=nums.length;let sx=0,sy=0,sxy=0,sx2=0;for(let i=0;i<n;i++){const x=i,y=nums[i]>=5?1:0;sx+=x;sy+=y;sxy+=x*y;sx2+=x*x;}const denom=n*sx2-sx*sx;if(denom!==0){const slope=(n*sxy-sx*sy)/denom;const intercept=(sy-slope*sx)/n;const p=slope*n+intercept;reg=p>=0.45?'BIG':'SMALL';}}
+  let bV=0,sV=0;
+  if(mk==='BIG')bV++;else if(mk==='SMALL')sV++;
+  if(mom==='BIG')bV++;else if(mom==='SMALL')sV++;
+  if(reg==='BIG')bV++;else if(reg==='SMALL')sV++;
+  if(nums[0]>=5)bV+=1.5;else sV+=1.5;
+  const recent=nums.slice(0,Math.min(12,nums.length));const rb=recent.filter(n=>n>=5).length;const rs=recent.length-rb;
+  if(rb>rs)bV+=0.8;else sV+=0.8;
+  if(mom){if(mom==='BIG')bV+=0.5;else sV+=0.5;}
+  const pred=bV>=sV?'BIG':'SMALL';
+  return {prediction:pred,number:lg_pickNumberFor(nums,pred)};
+}
+function lg_logic_numbermod(ctx){
+  const {nums}=ctx;if(nums.length<3)return null;
+  const freq={};nums.forEach(n=>freq[n]=(freq[n]||0)+1);
+  const sortedFreq=Object.entries(freq).sort((a,b)=>b[1]-a[1]);
+  const cand=new Map();
+  sortedFreq.forEach(([n,c])=>cand.set(Number(n),(cand.get(Number(n))||0)+(c/nums.length)*30));
+  for(let v=0;v<=9;v++)if(!cand.has(v))cand.set(v,2);
+  const scored=[];cand.forEach((s,n)=>scored.push({n,s:s+Math.random()*2}));scored.sort((a,b)=>b.s-a.s);
+  const pick=scored[0].n;
+  return {prediction:pick>=5?'BIG':'SMALL',number:pick};
+}
+function lg_logic_target(ctx){const {sizes,nums}=ctx;if(sizes.length<5)return null;let b=0,s=0;for(let i=0;i<5;i++){if(sizes[i]==='BIG')b++;else s++;}if(b>=4)return{prediction:'BIG',number:lg_pickNumberFor(nums,'BIG')};if(s>=4)return{prediction:'SMALL',number:lg_pickNumberFor(nums,'SMALL')};return{prediction:sizes[0],number:lg_pickNumberFor(nums,sizes[0])};}
+function lg_logic_bmw(ctx){
+  const {nums,sizes}=ctx;if(sizes.length<3)return null;
+  let streak=1;for(let i=1;i<Math.min(sizes.length,15);i++){if(sizes[i]===sizes[0])streak++;else break;}
+  let wB=0.5,wS=0.5;
+  if(sizes.length>=3){const ws=lg_computeBSWeights(nums);wB=ws.BIG;wS=ws.SMALL;if(streak>=3){wB=0.5;wS=0.5;}}
+  if(streak>=3){if(sizes[0]==='BIG')wB+=(streak>=6?0.46:0.26);else wS+=(streak>=6?0.46:0.26);}
+  const t=wB+wS;wB=Math.max(0.05,Math.min(0.95,wB/t));wS=1-wB;
+  const pred=wB>=wS?'BIG':'SMALL';
+  return {prediction:pred,number:lg_pickNumberFor(nums,pred)};
+}
+function lg_logic_ragstk(ctx){const {nums}=ctx;if(nums.length<8)return null;return lg_logic_wolfcore({nums});}
+function lg_logic_jarvish(ctx){
+  const {nums,sizes,period}=ctx;
+  if(nums.length<2)return null;
+  const keyLast2=period?period.slice(-2):'';
+  const key=keyLast2+keyLast2;
+  const keyVote=KEY_MAP[key]||null;
+  const chartNum=Number(String(nums[0])+String(nums[1]));
+  const numVote=NUMBER_CHART[chartNum]||null;
+  const votes=[keyVote,numVote].filter(v=>v==='B'||v==='S');
+  if(votes.length===0)return null;
+  const b=votes.filter(v=>v==='B').length;const s=votes.filter(v=>v==='S').length;
+  const winner=b>s?'B':(s>b?'S':votes[0]);
+  const pred=winner==='B'?'BIG':'SMALL';
+  return {prediction:pred,number:lg_pickNumberFor(nums,pred)};
+}
+const TRICK_LOGICS=[lg_logic_drago_noname,lg_logic_kingvip,lg_logic_wolfcore,lg_logic_pattern3,lg_logic_mayank,lg_logic_twolevel,lg_logic_dragon_empire,lg_logic_elitev3,lg_logic_akatsuki,lg_logic_blackgoku,lg_logic_numbermod,lg_logic_target,lg_logic_bmw,lg_logic_ragstk,lg_logic_jarvish];
+function getTRICK_Card_Vote(allNumsChrono, latestPeriod){
+  if(!Array.isArray(allNumsChrono)||allNumsChrono.length<3)return null;
+  const nums=allNumsChrono.slice().reverse();const sizes=nums.map(lg_getSize);
+  const ctx={nums,sizes,period:latestPeriod};
+  let big=0,small=0;
+  for(const fn of TRICK_LOGICS){try{const out=fn(ctx);if(out&&out.prediction==='BIG')big++;else if(out&&out.prediction==='SMALL')small++;}catch(e){}}
+  const total=big+small;if(total===0)return null;
+  if(big>small)return 'B';if(small>big)return 'S';return null;
+}
+
+/* STATE */
+const TOTAL=10;
+let window10=new Array(TOTAL).fill(null), mode='setup', history=[];
+let allResults=[], allNumbers=[];
+let chartNum1=null, gameMode='1min';
+let currentLevel=1, highestLevel=1, highestLevelCount=0;
+let skipRemaining=0;
+let consecutiveLosses=0;
+let pendingForecast=null;
+let apiPollTimer=null, apiBusy=false, apiLastIssue={'1min':null,'30sec':null}, apiSeeded={'1min':false,'30sec':false};
+let latestApiResults=[];
+const $=id=>document.getElementById(id);
+function pad2(n){return String(n).padStart(2,'0')}
+
+function getUTCPeriod(){
+  const now=new Date(),y=now.getUTCFullYear(),mo=pad2(now.getUTCMonth()+1),d=pad2(now.getUTCDate()),h=now.getUTCHours(),mi=now.getUTCMinutes();
+  if(gameMode==='1min'){const seq=String(10001+h*60+mi).padStart(5,'0');return `${y}${mo}${d}1000${seq}`}
+  const tot=h*3600+mi*60+now.getUTCSeconds(); const seq=String(50001+Math.floor(tot/30)).padStart(5,'0');
+  return `${y}${mo}${d}1000${seq}`;
+}
+function getTargetPeriod(){
+  if(apiLastIssue[gameMode]) return lg_nextIssueId(apiLastIssue[gameMode]);
+  return getUTCPeriod();
+}
+function getRemainingSeconds(){const s=new Date().getUTCSeconds();return gameMode==='30sec'?30-(s%30):60-s}
+
+function updateTimerAndPeriod(){
+    const rem=getRemainingSeconds();
+    const total = gameMode==='30sec' ? 30 : 60;
+    const elapsed = total - rem;
+    const progressDeg = Math.min(360, (elapsed / total) * 360);
+    const ring = $('timerRing');
+    if(ring){
+      ring.style.setProperty('--progress', progressDeg + 'deg');
+      if(rem <= 10) ring.classList.add('urgent');
+      else ring.classList.remove('urgent');
+    }
+    const timerEl = $('timer');
+    if(timerEl) timerEl.textContent=pad2(rem);
+    const periodEl = $('periodId');
+    if(periodEl) periodEl.textContent=getTargetPeriod() || '...';
+}
+
+function updatePrediction(){
+  const currentTarget = getTargetPeriod();
+  if(!currentTarget) return;
+  if(pendingForecast && pendingForecast.periodId === currentTarget){
+    renderPredictionUI(pendingForecast);
+    return;
+  }
+  if (skipRemaining > 0) {
+    pendingForecast = {
+      periodId: currentTarget, value: '-', isSkip: true, isLevelSkip: true, isReverse: false,
+      originalValue: null
+    };
+    renderPredictionUI(pendingForecast);
+    return;
+  }
+  const seqChrono = allResults.slice(-50);
+  const latestApiIssue = apiLastIssue[gameMode];
+  const comboVote = getCOMBO_Card_Vote(seqChrono, currentTarget);
+  const personalVote = getPERSONAL_Card_Vote(seqChrono, history);
+  const trickVote = getTRICK_Card_Vote(allNumbers, latestApiIssue);
+  let finalVal = null;
+  const votes = [comboVote, personalVote, trickVote].filter(v => v==='B' || v==='S');
+  if(votes.length > 0){
+      const bCount = votes.filter(v=>v==='B').length;
+      const sCount = votes.filter(v=>v==='S').length;
+      finalVal = bCount > sCount ? 'B' : (sCount > bCount ? 'S' : null);
+  }
+  // ✅ Reverse on every odd level from 3 (L3, L5, L7, L9, L11...)
+  let isReverse = false, originalValue = null;
+  if (finalVal && currentLevel >= 3 && currentLevel % 2 === 1) {
+    originalValue = finalVal;
+    finalVal = finalVal === 'B' ? 'S' : 'B';
+    isReverse = true;
+  }
+  if(finalVal && (finalVal==='B' || finalVal==='S')){
+    pendingForecast = {
+      periodId: currentTarget, value: finalVal, originalValue: originalValue,
+      isSkip: false, isLevelSkip: false, isReverse: isReverse
+    };
+  } else {
+    pendingForecast = {
+      periodId: currentTarget, value: '-', isSkip: true, isLevelSkip: false, isReverse: false,
+      originalValue: null
+    };
+  }
+  renderPredictionUI(pendingForecast);
+}
+
+function renderPredictionUI(forecast) {
+  const hlEl = $('highestLevelDisplay'); if(hlEl) hlEl.textContent = `L${highestLevel}`;
+  const hcEl = $('highestCount'); if(hcEl) hcEl.textContent = highestLevelCount >= 1 ? `×${highestLevelCount}` : '';
+  const clEl = $('currentLevelDisplay'); if(clEl) clEl.textContent = `L${currentLevel}`;
+
+  const label = $('predLabel');
+  const predValue = $('predValue');
+  if(!label || !predValue) return;
+
+  if (forecast.isLevelSkip) {
+    label.textContent = 'NO BET — SKIP';
+    predValue.className = 'pred-value SKIP';
+    predValue.textContent = 'SKIP';
+  } else if (!forecast.isSkip && forecast.value !== '-') {
+    label.textContent = 'AI PREDICTION';
+    predValue.className = 'pred-value ' + forecast.value;
+    predValue.textContent = forecast.value === 'B' ? 'BIG' : 'SMALL';
+  } else {
+    label.textContent = 'AI PREDICTION';
+    predValue.className = 'pred-value SKIP';
+    predValue.textContent = 'TIE';
+  }
+}
+
+function renderBoxes(){
+  const el = $('boxes'); if(!el)return;
+  el.innerHTML = '';
+  for(let i=0;i<TOTAL;i++){
+    const box = document.createElement('div');
+    box.className = 'box ' + (window10[i] || '');
+    box.textContent = window10[i] || '';
+    el.appendChild(box);
+  }
+}
+function renderAll(){renderBoxes();}
+
+function triggerWinAnimation(){
+    playWinSound();
+    const overlay = $('winOverlay');
+    if(!overlay)return;
+    overlay.classList.add('show');
+    setTimeout(() => { overlay.classList.remove('show'); }, 2500);
+}
+function triggerSkipAnimation(){
+    const overlay = $('skipOverlay');
+    if(!overlay)return;
+    overlay.classList.add('show');
+    setTimeout(() => { overlay.classList.remove('show'); }, 2200);
+}
+
+/* API */
+function extractApiRows(payload){
+  const found=[],seen=new Set();
+  function walk(node,depth=0){
+    if(!node||typeof node!=='object'||depth>8||seen.has(node))return;
+    seen.add(node);
+    if(Array.isArray(node)){for(const item of node)walk(item,depth+1);return;}
+    const issueRaw=node.issueNumber??node.issue_number??node.issue??node.period??node.periodNumber??node.issue_no??node.drawId??node.draw_id;
+    const raw=node.number??node.resultNumber??node.result_number??node.result??node.openNumber??node.open_number??node.winNumber??node.winningNumber;
+    if(issueRaw!==undefined&&raw!==undefined){
+      const issue=String(issueRaw).trim();
+      const match=String(raw).match(/(?:^|\D)([0-9])(?:\D|$)/);
+      const number=match?Number(match[1]):NaN;
+      if(issue&&Number.isFinite(number)&&number>=0&&number<=9)found.push({issue,number,value:number>=5?'B':'S'});
+    }
+    Object.values(node).forEach(v=>walk(v,depth+1));
+  }
+  walk(payload);
+  const unique=[...new Map(found.map(r=>[r.issue,r])).values()];
+  unique.sort((a,b)=>{
+    if(/^\d+$/.test(a.issue)&&/^\d+$/.test(b.issue)){const aa=BigInt(a.issue),bb=BigInt(b.issue);return aa<bb?-1:aa>bb?1:0;}
+    return a.issue.localeCompare(b.issue,undefined,{numeric:true});
+  });
+  return unique;
+}
+
+function processApiRow(r){
+  if (pendingForecast && pendingForecast.periodId === r.issue) {
+    if (pendingForecast.isSkip) {
+      history.push({ periodId: pendingForecast.periodId, predicted: '-', actual: r.value, correct: null, wasSkip: true });
+      if (pendingForecast.isLevelSkip) skipRemaining = Math.max(0, skipRemaining - 1);
+    } else {
+      const wasCorrect = pendingForecast.value === r.value;
+      history.push({ periodId: pendingForecast.periodId, predicted: pendingForecast.value, actual: r.value, correct: wasCorrect });
+      if (wasCorrect) {
+        triggerWinAnimation();
+        currentLevel = 1;
+        consecutiveLosses = 0;
+      } else {
+        // ✅ Level always increments until WIN. Skip on 2 consecutive losses.
+        consecutiveLosses++;
+        currentLevel++;
+        if (currentLevel > highestLevel) {
+          highestLevel = currentLevel;
+          highestLevelCount = 1;
+        } else if (currentLevel === highestLevel) {
+          highestLevelCount++;
+        }
+        if (consecutiveLosses >= 2) {
+          skipRemaining = 2;
+          consecutiveLosses = 0;
+          triggerSkipAnimation();
+        }
+      }
+    }
+  } else if (pendingForecast) {
+    history.push({ periodId: pendingForecast.periodId, predicted: pendingForecast.value, actual: null, correct: null, wasSkip: true });
+    if (pendingForecast.isLevelSkip) skipRemaining = Math.max(0, skipRemaining - 1);
+  }
+  pendingForecast = null;
+  allResults.push(r.value);
+  allNumbers.push(r.number);
+  if (mode === 'setup') {
+    const idx = window10.findIndex(x => x === null);
+    if (idx !== -1) { window10[idx] = r.value; if (window10.every(x => x !== null)) mode = 'rolling'; }
+  } else { window10.pop(); window10.unshift(r.value); }
+  const nums = latestApiResults.map(res => String(res.number));
+  chartNum1 = nums.join('').slice(0, 2) === '' ? null : Number(nums.join('').slice(0, 2));
+}
+
+async function pollGameAPI(){
+  if(apiBusy)return;
+  apiBusy=true;
+  const url = gameMode==='1min'?'https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json':'https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json';
+  try{
+    const response=await fetch(url,{method:'GET',cache:'no-store'});
+    if(!response.ok)throw new Error('HTTP');
+    const payload=await response.json();
+    const rows=extractApiRows(payload);
+    if(!rows.length)throw new Error('No rows');
+    const last=rows[rows.length-1];
+    latestApiResults=rows.slice(-2).reverse();
+    if(!apiSeeded[gameMode]){
+      const recent=rows.slice(-TOTAL).reverse();
+      window10=new Array(TOTAL).fill(null);
+      recent.forEach((r,i)=>{window10[i]=r.value;});
+      allResults = rows.map(r => r.value);
+      allNumbers = rows.map(r => r.number);
+      mode=recent.length===TOTAL?'rolling':'setup';
+      apiLastIssue[gameMode]=last.issue;
+      apiSeeded[gameMode]=true;
+      const nums = latestApiResults.map(res => String(res.number));
+      chartNum1 = nums.join('').slice(0,2) === '' ? null : Number(nums.join('').slice(0,2));
+      updatePrediction();
+      updateTimerAndPeriod();
+      renderAll();
+    }else if(apiLastIssue[gameMode]!==last.issue){
+      let fresh=rows.filter(r=>{
+        if(/^\d+$/.test(r.issue)&&/^\d+$/.test(String(apiLastIssue[gameMode]||'')))return BigInt(r.issue)>BigInt(apiLastIssue[gameMode]);
+        return String(r.issue).localeCompare(String(apiLastIssue[gameMode]||''),undefined,{numeric:true})>0;
+      });
+      fresh.sort((a,b) => String(a.issue).localeCompare(String(b.issue), undefined, {numeric: true}));
+      if(!fresh.length)fresh=[last];
+      fresh.forEach(r=>{ processApiRow(r); apiLastIssue[gameMode] = r.issue; updatePrediction(); });
+      apiLastIssue[gameMode]=last.issue;
+      updateTimerAndPeriod();
+      renderAll();
+    }
+  }catch(err){ console.warn('API sync failed'); }
+  finally{apiBusy=false}
+}
+
+function startApiPolling(){
+  if(apiPollTimer)clearInterval(apiPollTimer);
+  pollGameAPI();
+  apiPollTimer=setInterval(pollGameAPI,3000);
+}
+
+function switchMode(m){
+  if(m===gameMode)return;
+  gameMode=m;
+  apiSeeded[m]=false; apiLastIssue[m]=null;
+  window10=new Array(TOTAL).fill(null); mode='setup';
+  pendingForecast = null;
+  currentLevel = 1; highestLevel = 1; highestLevelCount = 0;
+  skipRemaining = 0;
+  consecutiveLosses = 0;
+  history = []; allResults = []; allNumbers = [];
+  chartNum1 = null; latestApiResults = [];
+  $('oneMinBtn').classList.toggle('active',gameMode==='1min');
+  $('thirtySecBtn').classList.toggle('active',gameMode==='30sec');
+  renderAll(); updateTimerAndPeriod();
+  pollGameAPI();
+}
+
+/* LOADER */
+const loaderFill=$('loaderFill'), loaderPercent=$('loaderPercent'), loaderSub=$('loaderSub'), spiderLoader=$('spiderLoader');
+let loadProgress = 0;
+const loadInterval = setInterval(()=>{
+  loadProgress += 2;
+  if(loadProgress>100)loadProgress=100;
+  if(loaderFill)loaderFill.style.width = loadProgress+'%';
+  if(loaderPercent)loaderPercent.textContent = loadProgress+'%';
+  if(loadProgress===20 && loaderSub)loaderSub.textContent='FETCHING LIVE DATA...';
+  if(loadProgress===45 && loaderSub)loaderSub.textContent='SYNCING AI MODELS...';
+  if(loadProgress===70 && loaderSub)loaderSub.textContent='CONNECTING TO SERVER...';
+  if(loadProgress===90 && loaderSub)loaderSub.textContent='ALMOST READY...';
+  if(loadProgress>=100){
+    clearInterval(loadInterval);
+    if(loaderSub){loaderSub.textContent='INITIALIZATION COMPLETE';loaderSub.style.color='#fbbf24'}
+    setTimeout(()=>{
+      if(spiderLoader){spiderLoader.style.opacity='0';setTimeout(()=>{spiderLoader.style.display='none'},500)}
+    },400);
+  }
+},60);
+
+/* UID VERIFICATION */
+const connectBtn = $('connectBtn');
+const uidInput = $('uidInput');
+const uidMsg = $('uidMsg');
+const uidBox = $('uidBox');
+const connectingState = $('connectingState');
+const connectText = $('connectText');
+const connSpinner = $('connSpinner');
+const connCheck = $('connCheck');
+const verifiedContent = $('verifiedContent');
+let accessAttempt = 0;
+
+if(connectBtn){
+  connectBtn.addEventListener('click', async ()=>{
+    const val = uidInput.value.trim();
+    if(!val){
+      uidMsg.textContent = 'PLEASE ENTER YOUR UID';
+      uidMsg.style.color = 'var(--spider-red)';
+      uidInput.classList.add('shake');
+      setTimeout(()=>uidInput.classList.remove('shake'), 450);
+      return;
+    }
+    const attempt = ++accessAttempt;
+    connectBtn.disabled = true;
+    connectBtn.classList.add('loading');
+    uidMsg.textContent = 'CHECKING ACCESS...';
+    uidMsg.style.color = 'var(--gold)';
+    try {
+      await window.accessControlReady;
+      const result = await window.verifyAdminAccess(val);
+      if(attempt !== accessAttempt) return;
+      if(!result.ok){
+        connectBtn.classList.remove('loading');
+        connectBtn.disabled = false;
+        uidInput.classList.add('shake');
+        uidMsg.textContent = result.reason || '❌ UID NOT APPROVED — DEPOSIT 300 AMOUNT FOR UID VERIFICATION';
+        uidMsg.style.color = 'var(--spider-red)';
+        setTimeout(()=>uidInput.classList.remove('shake'), 450);
+        return;
+      }
+      connectBtn.classList.remove('loading');
+      uidBox.style.display = 'none';
+      connectingState.classList.add('show');
+      if(connSpinner)connSpinner.style.display = 'block';
+      if(connCheck)connCheck.style.display = 'none';
+      if(connectText){ connectText.style.color='#ff2d55'; connectText.textContent = 'VERIFYING UID...'; }
+      setTimeout(()=>{ if(attempt === accessAttempt && connectText) connectText.textContent = 'CONNECTING TO SERVER...'; }, 1200);
+      setTimeout(()=>{
+        if(attempt !== accessAttempt || !window.isVerified) return;
+        if(connSpinner)connSpinner.style.display = 'none';
+        if(connCheck)connCheck.style.display = 'block';
+        if(connectText){ connectText.textContent = 'ACCESS GRANTED'; connectText.style.color = '#22c55e'; connectText.style.textShadow = '0 0 12px rgba(34,197,94,.7)'; }
+      }, 2500);
+      setTimeout(()=>{
+        if(attempt !== accessAttempt || !window.isVerified) return;
+        connectingState.classList.remove('show');
+        verifiedContent.classList.add('show');
+        connectBtn.disabled = false;
+        renderAll();
+      }, 3200);
+    } catch(err){
+      connectBtn.classList.remove('loading');
+      connectBtn.disabled = false;
+      uidMsg.textContent = 'SERVER CHECK FAILED — PLEASE TRY AGAIN';
+      uidMsg.style.color = 'var(--spider-red)';
+      console.error('Access check failed', err);
+    }
+  });
+  uidInput.addEventListener('keypress', (e)=>{ if(e.key === 'Enter') connectBtn.click(); });
+}
+
+/* INIT */
+setInterval(updateTimerAndPeriod, 1000);
+updateTimerAndPeriod();
+renderBoxes();
+startApiPolling();
+</script>
+</body>
+</html>
